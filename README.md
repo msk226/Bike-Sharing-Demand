@@ -2,8 +2,11 @@
 ## Title: Fake-News-Detective
 
 Members: 
+
 Name1, Department, Email
+
 Name2, Department, Email
+
 Name3, Department, Email ...
 
 ## I. Proposal (Option 1or 2)
@@ -11,6 +14,7 @@ Name3, Department, Email ...
 –This should be filled bysometime in early May.
 
 -Motivation: Why are you doing this?
+
 -What do you want to see at the end?
 
 ## II. Datasets
