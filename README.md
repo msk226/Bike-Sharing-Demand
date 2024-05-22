@@ -7,7 +7,7 @@ Name1, Department, Email
 
 김민석, 컴퓨터학부, kminseok5167@gmail.com
 
-Name2, Department, Email
+엄규현, 해양융합공학과, gheom24@gmail.com
 
 Name3, Department, Email ...
 
