@@ -1,13 +1,13 @@
 
 ## Title
-### Bike sharing demand
+### Forecast demand for bicycles based on specific climates
 --- 
 Members: 
 ```
 김민석, 컴퓨터학부, kminseok5167@gmail.com
 엄규현, 해양융합공학과, gheom24@gmail.com
-김현민 , 산업경영공학과, jihiyo7@hanyang.ac.kr
-Name3, Department, Email ...
+김현민, 산업경영공학과, jihiyo7@hanyang.ac.kr
+최준영, 전자공학부, jychoihy0507@naver.com
 ```
 
 ## I. Proposal 
