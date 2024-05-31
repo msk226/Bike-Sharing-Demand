@@ -6,21 +6,28 @@ import torch.optim as optim
 from sklearn.model_selection import train_test_split
 
 
-base_path = r"C:\Users\turtl\iCloudDrive\학교\4학년\1학기\AI+X 딥러닝\project"
 
-train = pd.read_csv(f'{base_path}/train.csv', parse_dates=["datetime"])
-test = pd.read_csv(f'{base_path}/test.csv', parse_dates=["datetime"])
-submission = pd.read_csv(f'{base_path}/sampleSubmission.csv')
+train = pd.read_csv(f'train.csv', parse_dates=["datetime"])
+test = pd.read_csv(f'test.csv', parse_dates=["datetime"])
+submission = pd.read_csv(f'sampleSubmission.csv')
 
 print(train.head(1))
 
 train["year"] = train["datetime"].dt.year
-train["dayofweek"] = train["datetime"].dt.dayofweek
+train["month"] = train["datetime"].dt.month
+train["day"] = train["datetime"].dt.day
 train["hour"] = train["datetime"].dt.hour
+train["minute"] = train["datetime"].dt.minute
+train["second"] = train["datetime"].dt.second
+
 
 test["year"] = test["datetime"].dt.year
-test["dayofweek"] = test["datetime"].dt.dayofweek
+test["month"] = test["datetime"].dt.month
+test["day"] = test["datetime"].dt.day
 test["hour"] = test["datetime"].dt.hour
+test["minute"] = test["datetime"].dt.minute
+test["second"] = test["datetime"].dt.second
+
 
 cols = test.columns[1:]
 X, y = train[cols], np.log1p(train["count"])
