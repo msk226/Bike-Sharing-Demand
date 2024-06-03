@@ -175,6 +175,8 @@ plt.show()
 바람이 너무 강하거나 너무 약할 때보다 적당한 바람이 부는 날에 자전거 대여량이 상대적으로 높아짐을 알 수 있다.
 
 ## 모델 학습 코드 
+
+### 데이터 준비
 ```python
 import pandas as pd
 import numpy as np
@@ -187,7 +189,116 @@ train = pd.read_csv(f'train.csv', parse_dates=["datetime"])
 test = pd.read_csv(f'test.csv', parse_dates=["datetime"])
 submission = pd.read_csv(f'sampleSubmission.csv')
 ```
-필요한 모듈을 import 하고, 데이터 셋을 불러온다. 
+필요한 모듈을 import 하고, 학습 및 테스트 데이터 셋을 불러온다. 
+
+```python
+train["year"] = train["datetime"].dt.year
+train["month"] = train["datetime"].dt.month
+train["day"] = train["datetime"].dt.day
+train["hour"] = train["datetime"].dt.hour
+train["minute"] = train["datetime"].dt.minute
+train["second"] = train["datetime"].dt.second
+
+test["year"] = test["datetime"].dt.year
+test["month"] = test["datetime"].dt.month
+test["day"] = test["datetime"].dt.day
+test["hour"] = test["datetime"].dt.hour
+test["minute"] = test["datetime"].dt.minute
+test["second"] = test["datetime"].dt.second
+```
+데이터 전처리를 위해 datetime 열에서 날짜와 시간 관련 특징들을 추출한다. 
+```python
+cols = test.columns[1:]
+X, y = train[cols], np.log1p(train["count"])
+```
+테스트 데이터의 열 중 첫 번째 열을 제외한 나머지 열들을 cols로 정의하고, 이를 사용해 학습 데이터의 특징(X)과 타겟(y)을 설정한다. count 열은 로그 변환한다.
+
+```python
+X_train, X_valid, y_train, y_valid = train_test_split(X, y, test_size=0.05, random_state=42)
+```
+학습 데이터를 학습용 데이터와 검증용 데이터로 분할한다. 
+
+```python
+X_train = torch.FloatTensor(X_train.values)
+y_train = torch.FloatTensor(y_train.values.reshape(-1, 1))
+X_valid = torch.FloatTensor(X_valid.values)
+y_valid = torch.FloatTensor(y_valid.values.reshape(-1, 1))
+X_test = torch.FloatTensor(test[cols].values)
+```
+파이토치 모델에서 사용할 수 있도록 데이터를 텐서로 변환한다
+
+### 모델 정의 
+```python
+class MultivariateLinearRegression(nn.Module):
+    def __init__(self, input_size, output_size):
+        super(MultivariateLinearRegression, self).__init__()
+        self.linear_relu_stack = nn.Sequential(
+            nn.Linear(input_size, 512),
+            nn.ReLU(),
+            nn.Linear(512, 512),
+            nn.ReLU(),
+            nn.Linear(512, 512),
+            nn.ReLU(),
+            nn.Linear(512, output_size),
+        )
+
+    def forward(self, x):
+        x = self.linear_relu_stack(x)
+        return x
+
+```
+다층 퍼셉트론(MLP) 모델을 정의한다. 입력층과 출력층 사이에 여러 개의 ReLU 활성화 함수를 사용하는 은닉층이 있다
+
+```python
+model = MultivariateLinearRegression(input_size=X_train.shape[1], output_size=1)
+loss_fn = nn.MSELoss()
+optimizer = optim.Adam(model.parameters(), lr=0.001)
+
+```
+모델 객체를 생성하고 손실 함수와 옵티마이저를 설정한다
+
+```python
+num_epochs = 1000
+for epoch in range(num_epochs):
+    y_pred = model(X_train)  # 예측값 계산
+    
+    loss = loss_fn(y_pred, y_train)  # 손실 계산
+
+    optimizer.zero_grad()  # 기울기 초기화
+    loss.backward()  # 역전파
+    optimizer.step()  # 가중치 업데이트
+
+    if (epoch + 1) % 100 == 0:
+        print(f'Epoch [{epoch + 1}/{num_epochs}], Loss: {loss.item():.4f}]')
+
+```
+모델을 학습시키는 루프다. 총 1000 에포크 동안 학습을 진행한다.
+
+```python
+with torch.no_grad():
+    y_pred_valid = model(X_valid)
+    print(f'Test Loss: {loss_fn(y_pred_valid, y_valid).item():.4f}')
+
+valid_score = ((y_valid - y_pred_valid) ** 2).mean() ** 0.5
+print(valid_score)
+
+```
+검증 데이터로 모델의 성능을 평가한다. 
+
+```python
+with torch.no_grad():
+    outputs = model(X_test)
+    y_predict = outputs.squeeze().numpy()
+```
+테스트 데이터에 대한 예측을 수행한다,
+
+```python
+submission["count"] = np.expm1(y_predict)
+file_name = f"submit_pytorch_{valid_score:.5f}.csv"
+submission.to_csv(file_name, index=False)
+```
+예측 결과를 역로그 변환하여 제출 형식에 맞게 저장한다.
+
 
 
 ---
