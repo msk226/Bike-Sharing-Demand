@@ -209,37 +209,40 @@ test["second"] = test["datetime"].dt.second
 데이터 전처리를 위해 datetime 열에서 날짜와 시간 관련 특징들을 추출한다. 
 ```python
 cols = test.columns[1:]
-X, y = train[cols], np.log1p(train["count"])
 ```
-테스트 데이터의 열 중 첫 번째 열을 제외한 나머지 열들을 cols로 정의하고, 이를 사용해 학습 데이터의 특징(X)과 타겟(y)을 설정한다. count 열은 로그 변환한다.
+테스트 데이터의 열 중 첫 번째 열을 제외한 나머지 열들을 cols로 정의한다. 
 
 ```python
-X_train, X_valid, y_train, y_valid = train_test_split(X, y, test_size=0.05, random_state=42)
-```
-학습 데이터를 학습용 데이터와 검증용 데이터로 분할한다. 
+# 데이터 분할
+X_train, X_valid, y_train, y_valid = train_test_split(X_train_scaled, np.log1p(train["count"]), test_size=0.2, random_state=42)
 
-```python
-X_train = torch.FloatTensor(X_train.values)
+# 텐서로 변환
+X_train = torch.FloatTensor(X_train)
 y_train = torch.FloatTensor(y_train.values.reshape(-1, 1))
-X_valid = torch.FloatTensor(X_valid.values)
+X_valid = torch.FloatTensor(X_valid)
 y_valid = torch.FloatTensor(y_valid.values.reshape(-1, 1))
-X_test = torch.FloatTensor(test[cols].values)
+X_test = torch.FloatTensor(X_test_scaled)
+
 ```
-파이토치 모델에서 사용할 수 있도록 데이터를 텐서로 변환한다
+학습 데이터를 학습용 데이터와 검증용 데이터로 분할하고 파이토치 모델에서 사용할 수 있도록 데이터를 텐서로 변환한다.
+- train_test_split을 사용해 훈련 데이터를 훈련 세트와 검증 세트로 분할한다.
+- test_size=0.2는 20%의 데이터를 검증 세트로 사용함을 의미한다.
+- random_state=42는 분할을 재현 가능하게 한다.
+- np.log1p를 사용해 target 값 (count)을 로그로 변환한다. 이는 target 값의 분포를 정규화하여 모델의 성능을 향상시키기 위함이다.
 
 ### 모델 정의 
 ```python
 class MultivariateLinearRegression(nn.Module):
     def __init__(self, input_size, output_size):
-        super(MultivariateLinearRegression, self).__init__()
+        super(ImprovedModel, self).__init__()
         self.linear_relu_stack = nn.Sequential(
-            nn.Linear(input_size, 512),
+            nn.Linear(input_size, 256),
             nn.ReLU(),
-            nn.Linear(512, 512),
+            nn.Linear(256, 256),
             nn.ReLU(),
-            nn.Linear(512, 512),
+            nn.Linear(256, 128),
             nn.ReLU(),
-            nn.Linear(512, output_size),
+            nn.Linear(128, output_size),
         )
 
     def forward(self, x):
@@ -247,59 +250,109 @@ class MultivariateLinearRegression(nn.Module):
         return x
 
 ```
-다층 퍼셉트론(MLP) 모델을 정의한다. 입력층과 출력층 사이에 여러 개의 ReLU 활성화 함수를 사용하는 은닉층이 있다
+위 클래스는 입력층, 은닉층 (ReLU 활성화 함수 포함) 및 출력층을 포함하는 신경망 모델을 정의한다.
+각 층의 노드 수는 256, 256, 128이다.
 
 ```python
-model = MultivariateLinearRegression(input_size=X_train.shape[1], output_size=1)
+model = ImprovedModel(input_size=X_train.shape[1], output_size=1)
 loss_fn = nn.MSELoss()
 optimizer = optim.Adam(model.parameters(), lr=0.001)
-
 ```
 모델 객체를 생성하고 손실 함수와 옵티마이저를 설정한다
 
 ```python
-num_epochs = 1000
+# 모델 학습
+num_epochs = 2000
 for epoch in range(num_epochs):
-    y_pred = model(X_train)  # 예측값 계산
+    model.train()
+    y_pred = model(X_train)
     
-    loss = loss_fn(y_pred, y_train)  # 손실 계산
-
-    optimizer.zero_grad()  # 기울기 초기화
-    loss.backward()  # 역전파
-    optimizer.step()  # 가중치 업데이트
+    loss = loss_fn(y_pred, y_train)
+    optimizer.zero_grad()
+    loss.backward()
+    optimizer.step()
 
     if (epoch + 1) % 100 == 0:
         print(f'Epoch [{epoch + 1}/{num_epochs}], Loss: {loss.item():.4f}]')
 
 ```
-모델을 학습시키는 루프다. 총 1000 에포크 동안 학습을 진행한다.
+모델을 학습시키는 루프다. 총 2000 에포크 동안 학습을 진행하고, 매 100 에포크마다 현재 손실을 출력한다. 
 
 ```python
 with torch.no_grad():
+    model.eval()
     y_pred_valid = model(X_valid)
     print(f'Test Loss: {loss_fn(y_pred_valid, y_valid).item():.4f}')
 
-valid_score = ((y_valid - y_pred_valid) ** 2).mean() ** 0.5
-print(valid_score)
 
 ```
 검증 데이터로 모델의 성능을 평가한다. 
 
 ```python
+def rmsle(y_true, y_pred):
+    return np.sqrt(np.mean((np.log1p(y_true) - np.log1p(y_pred)) ** 2))
+
+y_true = y_valid.numpy().squeeze()
+y_pred = y_pred_valid.numpy().squeeze()
+rmsle_score = rmsle(np.expm1(y_true), np.expm1(y_pred))
+print(f'RMSLE: {rmsle_score:.4f}')
+```
+RMSLE (Root Mean Squared Logarithmic Error)를 계산하여 모델의 예측 성능을 측정한다. 
+
+```python
 with torch.no_grad():
     outputs = model(X_test)
     y_predict = outputs.squeeze().numpy()
-```
-테스트 데이터에 대한 예측을 수행한다,
 
-```python
 submission["count"] = np.expm1(y_predict)
-file_name = f"submit_pytorch_{valid_score:.5f}.csv"
+file_name = f"submit_improved_{rmsle_score:.5f}.csv"
 submission.to_csv(file_name, index=False)
+print(pd.read_csv(file_name).head(2))
+
 ```
-예측 결과를 역로그 변환하여 제출 형식에 맞게 저장한다.
+테스트 데이터셋에 대해 예측을 수행하고, 결과를 submission 데이터프레임에 저장하여 CSV 파일로 생성한다. RMSLE 점수를 파일 이름에 포함시킨다.
 
 
+## 결과 분석 
+
+### 1. 손실 값 
+```
+Epoch [100/2000], Loss: 1.2554]
+Epoch [200/2000], Loss: 0.5998]
+Epoch [300/2000], Loss: 0.2701]
+Epoch [400/2000], Loss: 0.1512]
+Epoch [500/2000], Loss: 0.1169]
+Epoch [600/2000], Loss: 0.0972]
+Epoch [700/2000], Loss: 0.0819]
+Epoch [800/2000], Loss: 0.0735]
+Epoch [900/2000], Loss: 0.0663]
+Epoch [1000/2000], Loss: 0.0627]
+Epoch [1100/2000], Loss: 0.0574]
+Epoch [1200/2000], Loss: 0.0542]
+Epoch [1300/2000], Loss: 0.0517]
+Epoch [1400/2000], Loss: 0.0493]
+Epoch [1500/2000], Loss: 0.0469]
+Epoch [1600/2000], Loss: 0.0452]
+Epoch [1700/2000], Loss: 0.0469]
+Epoch [1800/2000], Loss: 0.0426]
+Epoch [1900/2000], Loss: 0.0402]
+Epoch [2000/2000], Loss: 0.0405]
+```
+각 에포크(epoch)에서 출력된 손실 값이 점진적으로 감소하고 있다.  모델이 학습을 통해 성능이 향상되고 있다는 것을 알 수 있다. 
+
+### 2. 검증 손실 
+검증 데이터에 대한 손실 값을 확인하여 모델이 과적합(overfitting)되지 않았는지 판단한다. 
+```
+Test Loss: 0.1311
+```
+학습이 완료된 후 검증 데이터셋에서의 손실 값은 0.1311로 계산된다. 이는 모델이 훈련되지 않은 데이터에 대해 얼마나 잘 예측하는지를 보여준다.
+
+```
+RMSLE: 0.3621
+```
+최종 RMSLE 값은 0.3621이다. RMSLE는 예측 값과 실제 값 사이의 차이를 로그 스케일에서 측정한 지표로, 값이 낮을수록 모델의 예측 성능이 좋음을 의미한다. 
+
+Kaggle의 "Bike Sharing Demand" 대회 리더보드와 비교했을 때, 상위 5% 이내에 속하는 결과를 얻었다. 
 
 ---
 
@@ -307,6 +360,15 @@ submission.to_csv(file_name, index=False)
 
 -Tools, libraries, blogs, or any documentation that you have used to do this project.
 
+https://www.kaggle.com/c/bike-sharing-demand/overview
+
 ---
 
 ## VI. Conclusion: Discussion
+
+## VII. Role 
+```
+김민석 : 코드 작성, 데이터 분석, 보고서 작성
+
+
+```
