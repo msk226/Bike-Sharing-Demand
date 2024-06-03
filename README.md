@@ -174,6 +174,21 @@ plt.show()
 
 바람이 너무 강하거나 너무 약할 때보다 적당한 바람이 부는 날에 자전거 대여량이 상대적으로 높아짐을 알 수 있다.
 
+## 모델 학습 코드 
+```python
+import pandas as pd
+import numpy as np
+import torch
+import torch.nn as nn
+import torch.optim as optim
+from sklearn.model_selection import train_test_split
+
+train = pd.read_csv(f'train.csv', parse_dates=["datetime"])
+test = pd.read_csv(f'test.csv', parse_dates=["datetime"])
+submission = pd.read_csv(f'sampleSubmission.csv')
+```
+필요한 모듈을 import 하고, 데이터 셋을 불러온다. 
+
 
 ---
 
