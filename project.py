@@ -7,9 +7,9 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
 # 데이터 불러오기
-train = pd.read_csv('train.csv', parse_dates=["datetime"])
-test = pd.read_csv('test.csv', parse_dates=["datetime"])
-submission = pd.read_csv('sampleSubmission.csv')
+train = pd.read_csv('data/train.csv', parse_dates=["datetime"])
+test = pd.read_csv('data/test.csv', parse_dates=["datetime"])
+submission = pd.read_csv('data/sampleSubmission.csv')
 
 # 특징 추출
 train["year"] = train["datetime"].dt.year
