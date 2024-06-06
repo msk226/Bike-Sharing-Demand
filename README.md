@@ -224,8 +224,7 @@ test["year"] = test["datetime"].dt.year
 test["month"] = test["datetime"].dt.month
 test["day"] = test["datetime"].dt.day
 test["hour"] = test["datetime"].dt.hour
-test["minute"] = test["datetime"].d![Uploading output.png…]()
-t.minute
+test["minute"] = test["datetime"].dt.minute
 test["second"] = test["datetime"].dt.second
 ```
 데이터 전처리를 위해 datetime 열에서 날짜와 시간 관련 특징들을 추출한다. 
