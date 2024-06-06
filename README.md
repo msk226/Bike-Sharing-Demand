@@ -112,13 +112,14 @@ ax3.set(xlabel='day', title="Rental volume by day")
 ```python
 # 시간대별 대여량 그래프
 plt.figure(figsize=(12, 6))
-sns.pointplot(data=train, x='hour', y='count', hue='workingday')
-plt.title('Hourly Rental Count by Working Day')
+sns.pointplot(data=train, x='hour', y='count', hue='day_of_week')
+plt.title('Hourly Rental Count by Day of the Week')
 plt.xlabel('Hour of the Day')
 plt.ylabel('Rental Count')
-plt.legend(title='Working Day', loc='upper left')
+plt.legend(title='Day of the Week', loc='upper left')
 plt.xticks(rotation=45)
 plt.show()
+
 ```
 <img width="899" alt="스크린샷 2024-05-31 오후 2 05 49" src="https://github.com/msk226/Bike-Sharing-Demand/assets/77945998/cee9c9e3-65f7-48e0-b967-469710b57847">
 
