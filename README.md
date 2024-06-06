@@ -121,7 +121,8 @@ plt.xticks(rotation=45)
 plt.show()
 
 ```
-<img width="899" alt="스크린샷 2024-05-31 오후 2 05 49" src="https://github.com/msk226/Bike-Sharing-Demand/assets/77945998/cee9c9e3-65f7-48e0-b967-469710b57847">
+![output](https://github.com/msk226/Bike-Sharing-Demand/assets/80662948/c5cd2ec0-84ec-4260-8056-2357dd5de618)
+
 
 근무하는 날과 근무하지 않는 날의 자전거 대여량이 명확히 차이가 나타난다. 근무일에는 출퇴근 시간에 많은 대여량이 발생하는 반면, 근무하지 않는 날에는 이러한 시간적 패턴이 뚜렷하지 않다.
 
@@ -209,7 +210,8 @@ test["year"] = test["datetime"].dt.year
 test["month"] = test["datetime"].dt.month
 test["day"] = test["datetime"].dt.day
 test["hour"] = test["datetime"].dt.hour
-test["minute"] = test["datetime"].dt.minute
+test["minute"] = test["datetime"].d![Uploading output.png…]()
+t.minute
 test["second"] = test["datetime"].dt.second
 ```
 데이터 전처리를 위해 datetime 열에서 날짜와 시간 관련 특징들을 추출한다. 
