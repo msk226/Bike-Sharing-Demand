@@ -1,14 +1,30 @@
 
-## Title
-### Forecast demand for bicycles based on specific climates
---- 
-Members: 
+# Title
+### Forecast Demand For Bicycles Based On Specific Climates
+
+
+
+## Members
 ```
 김민석, 컴퓨터학부, kminseok5167@gmail.com
 엄규현, 해양융합공학과, gheom24@gmail.com
 김현민, 산업경영공학과, jihiyo7@hanyang.ac.kr
 최준영, 전자공학부, jychoihy0507@naver.com
+
 ```
+--- 
+
+# Index
+#### I. Proposal 
+#### II. Datasets
+#### III. Methodology 
+#### IV. Evaluation & Analysis
+#### V. Related Work 
+#### VI. Conclusion: Discussion
+#### VII. Role
+
+--- 
+
 
 ## I. Proposal 
 
@@ -377,7 +393,7 @@ Kaggle의 "Bike Sharing Demand" 대회 리더보드와 비교했을 때, 상위 
 
 ---
 
-## V. Related Work (e.g., existing studies)
+## V. Related Work
 
 Dateset : https://www.kaggle.com/c/bike-sharing-demand/overview
 
