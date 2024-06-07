@@ -380,6 +380,7 @@ Kaggle의 "Bike Sharing Demand" 대회 리더보드와 비교했을 때, 상위 
 ## V. Related Work (e.g., existing studies)
 
 Dateset : https://www.kaggle.com/c/bike-sharing-demand/overview
+
 Reference code 
 1. https://github.com/corazzon/KaggleStruggle/blob/master/bike-sharing-demand/bike-sharing-demand-EDA.ipynb
 2. https://github.com/corazzon/KaggleStruggle/blob/master/bike-sharing-demand/bike-pytorch.ipynb
