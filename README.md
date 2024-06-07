@@ -12,18 +12,17 @@
 최준영, 전자공학부, jychoihy0507@naver.com
 
 ```
---- 
 
-# Index
-#### I. Proposal 
-#### II. Datasets
-#### III. Methodology 
-#### IV. Evaluation & Analysis
-#### V. Related Work 
-#### VI. Conclusion: Discussion
-#### VII. Role
+- [Title](#title)
+  * [I. Proposal](#i-proposal)
+  * [II. Datasets](#ii-datasets)
+  * [III. Methodology](#iii-methodology)
+  * [IV. Evaluation](#iv-evaluation)
+  * [V. Related Work](#v-related-work)
+  * [VI. Conclusion](#vi-conclusion)
+  * [VII. Role](#vii-role)
 
---- 
+
 
 
 ## I. Proposal 
@@ -93,7 +92,7 @@ train.shape
 
 ---
 
-## IV. Evaluation & Analysis
+## IV. Evaluation
 
 ### 연관 관계 파악 
 연/월/일 별 대여량을 파악하기 위해 다음과 같이 그래프로 나타냈다. 
@@ -406,7 +405,7 @@ Reference code
 
 ---
 
-## VI. Conclusion: Discussion
+## VI. Conclusion 
 우리가 만든 모델은 자전거 수요 예측을 위한 도구로서 중요한 역할을 할 수 있을 것으로 보인다. 과거 자전거 대여 패턴과 주어진 환경 조건(온도, 바람 속도 등)을 기반으로 미래의 자전거 대여량을 예측할 수 있고, 이러한 예측은 도시의 자전거 인프라 운영과 관리를 최적화하는 데 도움을 준다. 
 
 미래의 자전거 수요를 예측할 수 있음으로써, 도시는 자전거를 사용하는 시민들이 필요로 하는 곳에 자원을 효율적으로 할당할 수 있다. 예를 들어, 예측된 대여량이 높은 지역에는 더 많은 자전거를 배치하여 사용자들이 필요할 때 언제든지 이용할 수 있도록 한다. 반면에 예측된 대여량이 낮은 지역에서는 자원을 다른 곳에 더 효율적으로 이동시켜 자원 낭비를 최소화할 수 있다.
