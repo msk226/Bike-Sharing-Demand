@@ -379,13 +379,22 @@ Kaggle의 "Bike Sharing Demand" 대회 리더보드와 비교했을 때, 상위 
 
 ## V. Related Work (e.g., existing studies)
 
--Tools, libraries, blogs, or any documentation that you have used to do this project.
+Dateset : https://www.kaggle.com/c/bike-sharing-demand/overview
+Reference code 
+1. https://github.com/corazzon/KaggleStruggle/blob/master/bike-sharing-demand/bike-sharing-demand-EDA.ipynb
+2. https://github.com/corazzon/KaggleStruggle/blob/master/bike-sharing-demand/bike-pytorch.ipynb
+3. https://velog.io/@danniel1025/%EB%8B%A4%EC%B8%B5%ED%8D%BC%EC%85%89%ED%8A%B8%EB%A1%A0MLP
 
-https://www.kaggle.com/c/bike-sharing-demand/overview
+
 
 ---
 
 ## VI. Conclusion: Discussion
+우리가 만든 모델은 자전거 수요 예측을 위한 도구로서 중요한 역할을 할 수 있을 것으로 보인다. 과거 자전거 대여 패턴과 주어진 환경 조건(온도, 바람 속도 등)을 기반으로 미래의 자전거 대여량을 예측할 수 있고, 이러한 예측은 도시의 자전거 인프라 운영과 관리를 최적화하는 데 도움을 준다. 
+
+미래의 자전거 수요를 예측할 수 있음으로써, 도시는 자전거를 사용하는 시민들이 필요로 하는 곳에 자원을 효율적으로 할당할 수 있다. 예를 들어, 예측된 대여량이 높은 지역에는 더 많은 자전거를 배치하여 사용자들이 필요할 때 언제든지 이용할 수 있도록 한다. 반면에 예측된 대여량이 낮은 지역에서는 자원을 다른 곳에 더 효율적으로 이동시켜 자원 낭비를 최소화할 수 있다.
+
+또한, 날씨 뿐 만 아니라 지역의 특징 같은 정보를 FEATURE로 추가 한다면 더 좋은 성능의 모델을 개발할 수 있을 것으로 추측된다. 
 
 ## VII. Role 
 ```
