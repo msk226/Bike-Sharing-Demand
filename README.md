@@ -423,6 +423,6 @@ Reference code
 
 ### VIII. Video
 
+[![Video Label](http://img.youtube.com/vi/VyHH0O_si-A/0.jpg)](https://youtu.be/VyHH0O_si-A)
+
 https://www.youtube.com/watch?v=VyHH0O_si-A
-
-
